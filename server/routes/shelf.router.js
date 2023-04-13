@@ -11,7 +11,7 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   pool.query(sqlText)
     .then((result) => {
       res.send(result.rows);
-      console.log(result.rows);
+      // console.log(result.rows);
     })
     .catch((err) => {
       console.log('error getting all:', err)
