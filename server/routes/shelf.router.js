@@ -1,7 +1,7 @@
 const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
-
+const { rejectUnauthenticated } = require('../modules/authentication-middleware')
 /**
  * Get all of the items on the shelf
  */
@@ -19,8 +19,22 @@ router.post('/', (req, res) => {
 /**
  * Delete an item if it's something the logged in user added
  */
-router.delete('/:id', (req, res) => {
-  // endpoint functionality
+router.delete('/:id', rejectUnauthenticated, (req, res) => {
+  // console.log(`Req.body is:`, req.body);
+  // console.log(`is authenticated:`, req.isAuthenticated());
+  // console.log(`User is:`, req.user);
+  // console.log(`req.params.id?`, req.params.id);
+  // console.log(`/:id = `, req.params.id);
+
+  let sqlQuery = 'DELETE FROM "item" WHERE (id=$1 AND user_id=$2)';
+  let sqlParams = [req.params.id, req.user.id];
+
+  pool.query(sqlQuery, sqlParams)
+    .then(() => { res.sendStatus(200); })
+    .catch((error) => {
+      console.log(`Error with DELETE item`, error);
+      res.sendStatus(500);
+    });
 });
 
 /**
