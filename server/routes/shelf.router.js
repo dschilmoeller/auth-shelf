@@ -8,7 +8,7 @@ const {
 /**
  * Get all of the items on the shelf
  */
-router.get("/", rejectUnauthenticated, (req, res) => {
+router.get("/", (req, res) => {
   const sqlText = `SELECT * FROM "item";`;
   pool
     .query(sqlText)
