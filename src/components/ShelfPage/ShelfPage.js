@@ -14,6 +14,11 @@ function ShelfPage() {
     });
   }, []);
 
+  const deleteItem = (event) => {
+    console.log(`event.target.id is:`, event.target.id);
+    dispatch({type: 'DELETE_ITEM', payload: event.target.id})
+  }
+
   return (
     <div className="container">
       <h2>Shelf</h2>
@@ -24,6 +29,7 @@ function ShelfPage() {
               <div key={item.id}>
                 <img src={item.image_url} />
                 <p>{item.description}</p>
+                <button id={item.id} onClick={deleteItem}>Delete Item From Shelf</button>
               </div>
             );
           })}
