@@ -8,6 +8,9 @@ function ShelfPage() {
   const shelfItems = useSelector((store) => store.shelfItems);
   console.log('shelf items:', shelfItems);
 
+  const userID = useSelector((store => store.user.id))
+  console.log(`User?`, userID);
+
   useEffect(() => {
     dispatch({
       type: "FETCH_SHELF",
@@ -25,11 +28,12 @@ function ShelfPage() {
       <div>
         {shelfItems.length &&
           shelfItems.map((item) => {
+            console.log(`item.id =`, item.id);
             return (
               <div key={item.id}>
-                <img src={item.image_url} />
+                <img src={item.image_url} width="600rem" />
                 <p>{item.description}</p>
-                <button id={item.id} onClick={deleteItem}>Delete Item From Shelf</button>
+                {userID === item.user_id ? <button id={item.id} onClick={deleteItem}>Delete Item From Shelf</button> : <></> }
               </div>
             );
           })}
