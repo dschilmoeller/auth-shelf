@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 function ShelfPage() {
   const dispatch = useDispatch();
   const shelfItems = useSelector((store) => store.shelfItems);
-  const [newItem, setNewItem] = useState('')
   const [newDescription, setNewDescription] = useState('')
   const [newImage, setNewImage] = useState('')
   console.log('shelf items:', shelfItems);
@@ -24,22 +23,17 @@ const addNewItem = (event)=>{
 event.preventDefault();
 dispatch({
   type: 'ADD_ITEM',
-  payload: newItem
+  payload: {
+    image_url: newImage,
+    description: newDescription
+  }
 })
 
-const changeDescription = (event)=>{
-    setNewDescription(event.target.value)
-
-}
-
-const changeImage = (event)=>{
-    setNewImage(event.target.value)
-}
 
 }
 
   const deleteItem = (event) => {
-    console.log(`event.target.id is:`, event.target.id);
+    // console.log(`event.target.id is:`, event.target.id);
     dispatch({type: 'DELETE_ITEM', payload: event.target.id})
   }
 
@@ -49,15 +43,16 @@ const changeImage = (event)=>{
       <input
       type='text'
       value={newDescription}
-      onChange={(event)=> changeDescription(event)}
-      placeholder='description'>
-      </input>
+      onChange={(event)=> setNewDescription(event.target.value)}
+      placeholder='description'/>
+    
       <input
       type='text'
       value={newImage}
-      onChange={(event)=> changeImage(event)}
+      onChange={(event)=> setNewImage(event.target.value)}
       placeholder='image'
-      ></input>
+      />
+      <button type='submit'>submit</button>
     </form>
 
 
@@ -66,7 +61,7 @@ const changeImage = (event)=>{
       <div>
         {shelfItems.length &&
           shelfItems.map((item) => {
-            console.log(`item.id =`, item.id);
+            // console.log(`item.id =`, item.id);
             return (
               <div key={item.id}>
                 <img src={item.image_url} width="600rem" />
