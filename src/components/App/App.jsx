@@ -60,13 +60,13 @@ function App() {
             <UserPage />
           </ProtectedRoute>
 
-          <ProtectedRoute
+          <Route
             // logged in shows InfoPage else shows LoginPage
             exact
             path="/shelf"
           >
             <ShelfPage />
-          </ProtectedRoute>
+          </Route>
 
           <Route
             exact
