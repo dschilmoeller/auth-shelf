@@ -11,6 +11,9 @@ function ShelfPage() {
   const [newImage, setNewImage] = useState('')
   console.log('shelf items:', shelfItems);
 
+  const userID = useSelector((store => store.user.id))
+  console.log(`User?`, userID);
+
   useEffect(() => {
     dispatch({
       type: "FETCH_SHELF",
@@ -35,6 +38,10 @@ const changeImage = (event)=>{
 
 }
 
+  const deleteItem = (event) => {
+    console.log(`event.target.id is:`, event.target.id);
+    dispatch({type: 'DELETE_ITEM', payload: event.target.id})
+  }
 
   return (
 <>
@@ -59,10 +66,12 @@ const changeImage = (event)=>{
       <div>
         {shelfItems.length &&
           shelfItems.map((item) => {
+            console.log(`item.id =`, item.id);
             return (
               <div key={item.id}>
-                <img src={item.image_url} />
+                <img src={item.image_url} width="600rem" />
                 <p>{item.description}</p>
+                {userID === item.user_id ? <button id={item.id} onClick={deleteItem}>Delete Item From Shelf</button> : <></> }
               </div>
             );
           })}
