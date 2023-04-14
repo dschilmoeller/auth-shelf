@@ -70,7 +70,19 @@ router.delete("/:id", rejectUnauthenticated, (req, res) => {
  * Update an item if it's something the logged in user added
  */
 router.put("/:id", (req, res) => {
-  // endpoint functionality
+
+  console.log(`req.body`, req.body);
+  let sqlQuery = `UPDATE "item"
+                    SET "description" = $1, "image_url" = $2
+                    WHERE "id" = $3 AND "user_id" = $4`
+  let sqlParams = [req.body.description, req.body.image_url, req.params.id, req.user.id]
+
+  console.log(`query:`, sqlQuery, 'with params', sqlParams);
+  pool.query(sqlQuery, sqlParams)
+    .then((response) => { res.sendStatus(200) })
+    .catch((error) => { res.sendStatus(500) })
+
+
 });
 
 /**

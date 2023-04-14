@@ -5,6 +5,7 @@ import userSaga from './user.saga';
 import deleteItemFromShelf from './delete.saga';
 import fetchShelf from './fetchShelf.saga';
 import postItem from './post.saga';
+import editItemOnShelf from './put.saga';
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -20,7 +21,8 @@ export default function* rootSaga() {
     userSaga(),
     deleteItemFromShelf(),
     fetchShelf(),
-    postItem()
+    postItem(),
+    editItemOnShelf()
   ]);
   
 }
