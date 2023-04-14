@@ -26,6 +26,7 @@ router.get("/", (req, res) => {
  * Add an item for the logged in user to the shelf
  */
 router.post("/", rejectUnauthenticated, (req, res) => {
+  // this simply adds items to the row; rejectUnauthenticated means it doesn't run if a user isn't logged in.
   const sqlText = `INSERT INTO "item" ("description", "image_url", "user_id")
   VALUES ($1, $2, $3)`;
   //remember to use 'req.user.id' instead of req.body.user_id
@@ -52,6 +53,10 @@ router.delete("/:id", rejectUnauthenticated, (req, res) => {
   // console.log(`req.params.id?`, req.params.id);
   // console.log(`/:id = `, req.params.id);
 
+  // the presence of req.user.id is our 'security' here; this sql command will run
+  // but not match anything ('delete 0') is the expected output if a user tries
+  // to delete something their login isn't authorized for.
+
   let sqlQuery = 'DELETE FROM "item" WHERE (id=$1 AND user_id=$2)';
   let sqlParams = [req.params.id, req.user.id];
 
@@ -70,7 +75,25 @@ router.delete("/:id", rejectUnauthenticated, (req, res) => {
  * Update an item if it's something the logged in user added
  */
 router.put("/:id", (req, res) => {
-  // endpoint functionality
+
+  // console.log(`req.body`, req.body);
+  // UPDATE - Selects the table
+  // SET - change existing data to new data
+  // WHERE - both these have to match. As with delete, above, this prevents a user that is not logged in from doing anything
+  // even though the sql query will run.
+  let sqlQuery = `UPDATE "item"
+                    SET "description" = $1, "image_url" = $2
+                    WHERE "id" = $3 AND "user_id" = $4`
+
+  // req.body is passed from the front end; req.params is in the url used, and req.user.id is
+  // from the server side session that stores data about a logged in user. 
+  let sqlParams = [req.body.description, req.body.image_url, req.params.id, req.user.id]
+
+  // console.log(`query:`, sqlQuery, 'with params', sqlParams);
+  pool.query(sqlQuery, sqlParams)
+    .then((response) => { res.sendStatus(200) })
+    .catch((error) => { res.sendStatus(500) })
+
 });
 
 /**
